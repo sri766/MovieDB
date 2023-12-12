@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import {fetchDataApi} from './utils/api'
-import { getApiConfig } from './store/homeSlice';
+import { getApiConfig, getGenres } from './store/homeSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import homeSlice from './store/homeSlice'
 
@@ -23,6 +23,7 @@ function App() {
 
   useEffect(() => {
     fetchApiConfig();
+    genresCall();
   }, []);
 
 
@@ -38,7 +39,25 @@ function App() {
       dispatch(getApiConfig(url));
     }
     )
-  }
+  };
+
+  const genresCall = async () =>{
+    let promises = [];
+    let endPoints = ["tv","movie"];
+    let allGenres = [];
+
+    endPoints.forEach((url) => {
+      promises.push(fetchDataApi(`/genre/${url}/list`));
+    });
+
+    const data = await Promise.all(promises);
+
+    data.map(({genres})=>{
+      return genres.map((item)=>(allGenres[item.id] = item))
+    })
+    
+    dispatch(getGenres(allGenres));
+  };
 
   return (
     <BrowserRouter>
@@ -50,7 +69,7 @@ function App() {
           <Route path=":/mediaType/:id" element={<Explore/>} />
           <Route path="*" element={<PageNotFound/>} />
         </Routes>
-      {/* <Footer/> */}
+      <Footer/>
     </BrowserRouter> 
   )
 }

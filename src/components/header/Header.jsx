@@ -7,7 +7,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import "./style.scss";
 
 import ContentWrapper from "../contentWrapper/ContentWrapper";
-import logo from "../../../public/assests/movix-logo.svg";
+import logo from "../../assets/movix-logo.svg";
 
 const Header = () => {
     const [show, setShow] = useState("top");
@@ -18,6 +18,32 @@ const Header = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    useEffect(()=>{
+      window.scrollTo(0,0);
+    },[location]);
+
+    const handleScroll = () => {
+      if(window.scrollY > 200){
+        if(window.scrollY > lastScrollY && !mobileMenu){
+          setShow("hide");
+        }
+        else{
+          setShow("show");
+        }
+      }
+      else{
+        setShow("top");
+      }
+      setLastScrollY(window.scrollY);
+    }
+
+    useEffect(()=>{
+      window.addEventListener("scroll", handleScroll);
+
+      return () =>{
+        window.removeEventListener("scroll", handleScroll);
+      }
+    },[lastScrollY]);
 
     const openSearch = () => {
       setMobileMenu(false);
@@ -47,6 +73,8 @@ const Header = () => {
       }
       setMobileMenu(false);
     }
+
+    
     return (
         <header className={`header ${mobileMenu ? "mobileView": ""} ${show}`}>
           <ContentWrapper>
@@ -54,12 +82,10 @@ const Header = () => {
               <img src={logo} alt="Movix" />
             </div>
             <ul className="menuItems">
-              <li className="menuItem" onClick={navigationHandler("movie")}>Movies</li>
-              <li className="menuItem" onClick={navigationHandler("tv")}>TV Show</li>
-              <li className="menuItem"><HiOutlineSearch /></li>
+              <li className="menuItem" onClick={()=>navigationHandler('movie')}>Movies</li>
+              <li className="menuItem" onClick={()=>navigationHandler('tv')}>TV Show</li>
+              <li className="menuItem"><HiOutlineSearch onClick={openSearch}/></li>
             </ul>
-
-
             <div className="mobileMenuItems">
               <HiOutlineSearch onClick={openSearch}/>
               {mobileMenu ? (
