@@ -3,7 +3,6 @@ import './App.css'
 import {fetchDataApi} from './utils/api'
 import { getApiConfig, getGenres } from './store/homeSlice';
 import { useSelector, useDispatch } from 'react-redux';
-import homeSlice from './store/homeSlice'
 
 import Home from './pages/home/Home'
 import Header from './components/header/Header'
@@ -64,9 +63,9 @@ function App() {
       <Header/>
         <Routes>
           <Route path="/" element={<Home/>} />
-          <Route path=":/mediaType/:id" element={<Details/>} />
-          <Route path="/search/:searchQuery" element={<SearchResults/>} />
-          <Route path=":/mediaType/:id" element={<Explore/>} />
+          <Route path="/:mediaType/:id" element={<Details/>} />
+          <Route path="/search/:query" element={<SearchResults/>} />
+          <Route path="/explore/:mediaType" element={<Explore/>} />
           <Route path="*" element={<PageNotFound/>} />
         </Routes>
       <Footer/>
